@@ -1,0 +1,128 @@
+{
+  // 📌 TypeScript 5.9 기준 tsconfig 템플릿
+  // 백엔드(Node.js ESM) 환경에 맞추어 정리한 설정입니다.
+
+  "compilerOptions": {
+    // ------------------------------------------------------------
+    // 📁 File Layout
+    // 프로젝트의 소스 경로와 빌드 출력 경로를 명확히 하고 싶을 때 사용합니다.
+    // 백엔드 서비스는 일반적으로 src → dist 구조를 사용합니다.
+    // ------------------------------------------------------------
+    "rootDir": "./TypeScript",
+    "outDir": "./dist",
+
+    // ------------------------------------------------------------
+    // 🧭 Path Alias 설정 (실무 필수 강력 추천)
+    // ------------------------------------------------------------
+    // baseUrl: TS가 import 경로를 해석할 기준 루트
+    //   ✔ src를 기준 경로로 사용
+    //"baseUrl": "src",
+    //"paths": {
+    // 예: @app/server → src/app/server.ts
+    //"@app/*": ["app/*"],
+    // 예: @config/env → src/config/env.ts
+    //"@config/*": ["config/*"],
+    // 예: @utils/logger → src/utils/logger.ts
+    //"@utils/*": ["utils/*"],
+    // 예: @services/user.service → src/services/user.service.ts
+    //"@services/*": ["services/*"]
+    //},
+
+    // ------------------------------------------------------------
+    // 🌐 Environment Settings (환경 설정)
+    // module: Node.js의 ESM/CJS 해석 규칙을 그대로 따르는 설정입니다.
+    //  - nodenext: Node.js 20+의 ESM 처리 방식을 TS가 따라가게 함
+    //  - 백엔드에서 Node 런타임 호환성이 매우 중요할 때 적합
+    // moduleResolution: import 경로를 어떻게 해석할지 결정
+    //  - bundler : Vite / tsx / tsup 같은 빌드 툴 규칙 (확장자 생략 OK)
+    // ------------------------------------------------------------
+    // 순수 Node.js 백엔드 서비스, 서버/마이크로서비스
+    //"module": "nodenext",
+    //"moduleResolution": "nodenext",
+
+    // tsx 사용 시에는 "module": "ESNext" + "moduleResolution": "bundler"가 더 부드럽습니다.
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    // target: 출력되는 JS 문법 수준 (Node 18~20은 ES2022 이상 권장)
+    // esnext는 최신 JS 문법을 그대로 사용
+    "target": "ES2022",
+
+    // lib: Node.js 환경에서 필요한 전역 기능 제공 (fetch 등 포함)
+    //      어떤 JavaScript 표준/전역 기능을 사용할지 결정
+    "lib": ["ES2022"],
+
+    // Node.js 환경에서는 @types/node가 필요합니다.
+    // types 배열에 node를 명시하면 TS가 Node 전역 타입(fs, path 등)을 인식합니다.
+    "types": ["node", "vitest/globals"],
+
+    // ------------------------------------------------------------
+    // 📦 Other Outputs (빌드 출력 옵션)
+    // sourceMap: 디버깅 시 원본 TS 파일을 추적하기 위해 필요
+    // declaration: 라이브러리 공개 목적이 아니면 선택적
+    // 백엔드 서비스라면 d.ts가 꼭 필요하지는 않지만 유지해도 무방
+    // ------------------------------------------------------------
+    "sourceMap": true,
+    "declaration": false, // 백엔드 서비스는 보통 d.ts 필요 없음
+    "declarationMap": false,
+
+    // ------------------------------------------------------------
+    // 🔍 Stricter Typechecking Options (엄격한 타입 검사)
+    // 서비스를 안정적으로 운영할 때 매우 유용합니다.
+    // ------------------------------------------------------------
+
+    // 배열/객체 인덱스 접근 시 undefined 가능성을 항상 포함
+    // (코드는 길어지지만 안전성이 크게 올라감)
+    // 이 옵션은 실무에서 거의 사용되지 않습니다.
+    // "noUncheckedIndexedAccess": true,
+
+    // 선택적 프로퍼티를 정확하게 구분
+    // { a?: string } → 'a: undefined'와 'a 미존재'를 엄격히 구분
+    "exactOptionalPropertyTypes": true,
+
+    // ------------------------------------------------------------
+    // 🎨 Style Options (스타일/코드 규칙)
+    // 아래 옵션들은 추천되지만 필요에 따라 켜거나 끌 수 있습니다.
+    // ------------------------------------------------------------
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+
+    // ------------------------------------------------------------
+    // 👍 Recommended Options (추천 옵션)
+    // 백엔드 실무에서 거의 필수에 가까운 설정들입니다.
+    // ------------------------------------------------------------
+
+    // TS의 가장 엄격한 타입 검사 모드 활성화
+    "strict": true,
+
+    // 백엔드 환경에서는 JSX를 사용하지 않으므로 제거
+    // "jsx": "react-jsx",
+
+    // import/export 문법을 변환하지 않고 원본 그대로 유지
+    // ESM 환경에서 문제를 예방하기 좋음
+    // 그래서 “타입만 필요한 import”를 반드시 import type으로 표시하도록 요구합니다.
+    "verbatimModuleSyntax": true,
+
+    // 파일을 독립된 모듈로 간주하여 ESM 환경 오류를 예방
+    "isolatedModules": true,
+
+    // 사이드 이펙트를 일으키는 import를 엄격하게 검사
+    "noUncheckedSideEffectImports": true,
+
+    // TypeScript가 모듈을 감지하는 방식을 강제로 모듈로 설정
+    "moduleDetection": "force",
+
+    // 외부 라이브러리 타입 검사 스킵 (실무에서 속도 향상 + 안정적)
+    "skipLibCheck": true
+  },
+
+  // ------------------------------------------------------------
+  // 📌 include / exclude
+  // 컴파일 대상과 제외할 파일/디렉토리를 명확히 설정
+  // ------------------------------------------------------------
+  "include": ["TypeScript"],
+  "exclude": ["node_modules", "dist"]
+}
