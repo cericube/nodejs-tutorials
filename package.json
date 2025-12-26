@@ -27,14 +27,22 @@
     "@eslint/js": "^9.39.1",
     "@eslint/json": "^0.14.0",
     "@types/node": "^24.10.1",
+    "@types/pg": "^8.16.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.5.0",
     "nodemon": "^3.1.11",
     "prettier": "^3.6.2",
+    "prisma": "^7.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4",
     "vitest": "^4.0.14"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.1.0",
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3"
   }
 }

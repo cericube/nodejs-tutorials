@@ -1,0 +1,14 @@
+//extends: 루트에 있는 tsconfig.json 설정을 그대로 가져오되, 필요한 부분만 덮어씁니다.
+{
+  "extends": "../tsconfig.json", // 루트 설정을 상속받아 중복 설정을 줄입니다.
+  "compilerOptions": {
+    "rootDir": ".", // 현재 폴더(Prisma/)를 루트로 설정
+    "outDir": "./dist", // 빌드 결과물이 섞이지 않게 경로 지정
+    "baseUrl": "."
+  },
+  "include": [
+    ".", // 현재 폴더의 모든 파일 포함
+    "generated/**/*" // 생성된 Prisma Client 포함
+  ],
+  "exclude": ["node_modules"]
+}
