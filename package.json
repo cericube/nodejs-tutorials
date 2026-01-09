@@ -5,9 +5,9 @@
   "type": "module",
   "description": "",
   "workspaces": [
-    "javascript/**",
-    "typescript/**",
-    "prisma/**"
+    "javascript",
+    "typescript",
+    "prisma"
   ],
   "scripts": {
     "lint": "eslint .",

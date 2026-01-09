@@ -29,6 +29,15 @@
   // ===============================================================
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
+  // ===============================================================
+  // Prisma 전용 포맷터 설정
+  // ===============================================================
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  // Prisma Extension 텔레메트리 비활성화 (선택)
+  "telemetry.telemetryLevel": "off",
+
   // 줄바꿈
   "files.eol": "\n",
 

@@ -9,6 +9,6 @@
   },
 
   // 3. 실제 검사 및 컴파일 대상 지정
-  "include": ["src/**/*"], // src 폴더 안의 모든 파일을 대상으로 함
+  "include": ["src/**/*", "src/shared"], // src 폴더 안의 모든 파일을 대상으로 함
   "exclude": ["node_modules", "dist"]
 }

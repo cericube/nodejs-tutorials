@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client" // Prisma 7부터는 -js를 뺍니다.
+  output          = "../src/generated" // output 설정이 필수가 되었습니다.
+  // ch05 실습시 필요
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  email       String    @unique
+  displayName String?   @map("display_name")
+
+  // Relations
+  profile  Profile?
+  posts    Post[]
+  comments Comment[]
+  likes    PostLike[]
+
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Profile {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  bio       String?
+  // Relations (1:1)
+  userId    Int       @unique @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([deletedAt])
+  @@map("profiles")
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  title     String
+  content   String?
+  published Boolean   @default(false)
+
+  // Relations (N:1)
+  authorId Int  @map("author_id")
+  author   User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  comments Comment[]
+  likes    PostLike[]
+
+  // 복합 커서 사용을 위한 필수 설정
+  // Prisma는 이를 통해 'createdAt_id'라는 커서 이름을 생성합니다.
+  @@unique([createdAt, id])
+  @@index([authorId, createdAt])
+  @@index([published, createdAt])
+  @@index([deletedAt])
+  @@map("posts")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  content   String
+
+  // Relations
+  postId Int  @map("post_id")
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId Int  @map("author_id")
+  author   User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([postId, createdAt])
+  @@index([authorId, createdAt])
+  @@index([deletedAt])
+  @@map("comments")
+}
+
+model PostLike {
+  // Composite key (explicit M:N)
+  userId Int @map("user_id")
+  postId Int @map("post_id")
+
+  // Common-ish columns
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+  @@index([postId, createdAt])
+  @@index([deletedAt])
+  @@map("post_likes")
+}
