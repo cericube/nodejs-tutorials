@@ -46,6 +46,35 @@ function createPrismaInstance() {
     idleTimeoutMillis: 30000,
   });
 
+  const getPoolStats = () => ({
+    total: pool.totalCount,
+    idle: pool.idleCount,
+    active: pool.totalCount - pool.idleCount,
+    waiting: pool.waitingCount,
+  });
+
+  // 새 연결 생성 시
+  pool.on('connect', () => {
+    const poolStats = getPoolStats();
+    console.log('connect', poolStats);
+  });
+
+  pool.on('acquire', () => {
+    const poolStats = getPoolStats();
+    console.log('acquire', poolStats);
+  });
+
+  pool.on('release', () => {
+    const poolStats = getPoolStats();
+    console.log('release', poolStats);
+  });
+
+  // 연결 제거 시 (유휴 타임아웃 또는 명시적 종료)
+  pool.on('remove', () => {
+    const poolStats = getPoolStats();
+    console.log('remove', poolStats);
+  });
+
   // 2. Prisma 전용 Postgres 어댑터 적용 (특정 스키마 지정)
   // Prisma/어댑터가 내부적으로 풀에서 커넥션을 빌리고, 쿼리가 끝나면 내부에서 release 합니다.
   const adapter = new PrismaPg(pool, { schema: 'study' });
